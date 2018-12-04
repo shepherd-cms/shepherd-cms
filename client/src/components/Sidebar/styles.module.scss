@@ -2,4 +2,22 @@
   width: 20%;
   padding: 10px;
   margin-right: 1em;
+
+  & li {
+    padding-bottom: 1em;
+  }
+
+  & a {
+    color: #4e566d;
+    text-decoration: none;
+  }
+}
+
+.active {
+  color: #586ada;
+  font-weight: bold;
+}
+
+.sideBar {
+  padding: 0.5em;
 }

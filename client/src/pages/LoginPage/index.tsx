@@ -1,19 +1,13 @@
 import * as React from "react";
-import styles from "./styles.module.scss";
-import "../../static/css/tailwind.min.css";
+import { withRouter } from "react-router-dom";
+// import { PasswordForgetLink } from "../PasswordForget";
+import { LoginForm } from "../../components/LoginForm";
 
-interface IProps {}
+const Login = ({ history }: { [key: string]: any }) => (
+  <div className="container mx-auto flex mt-8">
+    <LoginForm history={history} />
+    {/* <PasswordForgetLink /> */}
+  </div>
+);
 
-interface IState {}
-
-class LoginPage extends React.Component<IProps, IState> {
-  public static defaultProps: Partial<IProps> = {};
-
-  public state: IState = {};
-
-  public render() {
-    return <div>Not Implemented</div>;
-  }
-}
-
-export default LoginPage;
+export const LoginPage = withRouter(Login);

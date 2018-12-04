@@ -16,7 +16,15 @@ class Card extends React.Component<IProps, IState> {
   public state: IState = {};
 
   public render() {
-    return <div className={`p-4`}> {this.props.children} </div>;
+    return (
+      <div
+        className={`p-4 text-grey-darker font-bold ${
+          Styles.root
+        } flex justify-between items-center`}
+      >
+        {this.props.children}
+      </div>
+    );
   }
 }
 

@@ -1,31 +1,25 @@
 import * as React from "react";
-import classNames from "classnames";
 import Styles from "./styles.module.scss";
 import "../../static/css/tailwind.min.css";
 
 interface IProps {
-  className: string;
+  checked: boolean;
 }
 
 interface IState {}
 
 class Card extends React.Component<IProps, IState> {
   public static defaultProps: Partial<IProps> = {
-    className: ""
+    checked: false
   };
 
   public state: IState = {};
 
   public render() {
+    const { checked } = this.props;
     return (
-      <div
-        className={classNames(
-          "shadow-lg mb-4 rounded-sm",
-          Styles.root,
-          this.props.className
-        )}
-      >
-        {this.props.children}
+      <div>
+        <input type="checkbox" checked={checked} />
       </div>
     );
   }
