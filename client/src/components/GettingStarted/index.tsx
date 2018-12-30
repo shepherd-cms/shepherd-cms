@@ -1,8 +1,4 @@
 import * as React from "react";
-import Card from "../../components/Card";
-import CardHeader from "../../components/CardHeader";
-import { firebase } from "../../firebase";
-import { NavLink, withRouter } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./styles.module.scss";

@@ -1,19 +1,20 @@
-import React, { Component } from "react";
+import React from "react";
+import { connect } from "react-redux";
+import { Route, Switch, Redirect } from "react-router-dom";
+import { authRef } from "./firebase";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+
 import { LoginPage } from "./pages/LoginPage";
 import { SignUp } from "./pages/SignUp";
+import Profile from "./pages/Profile";
+import HomePage from "./pages/HomePage";
 import ConnectGroupSearch from "./pages/ConnectGroupSearch";
 import VolunteerTeams from "./pages/VolunteerTeams";
 import SideBar from "./components/Sidebar";
-import Profile from "./pages/Profile";
-import HomePage from "./pages/HomePage";
-import { Route, Switch } from "react-router-dom";
 import * as routes from "./constants/routes";
-import styles from "./App.module.scss";
-import { firebase } from "./firebase";
-import { withAuthentication } from "./firebase/withAuthentication";
 
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { fab } from "@fortawesome/free-brands-svg-icons";
+import styles from "./App.module.scss";
 import {
   faCheckSquare,
   faCoffee,
@@ -37,11 +38,15 @@ library.add(
 
 import { BrowserRouter as Router } from "react-router-dom";
 import "./static/css/tailwind.min.css";
+import NavBar from "./components/NavBar";
 
-interface InterfaceProps {}
+interface InterfaceProps {
+  setAuthUser: (authUser: any) => void;
+  auth: any;
+}
 
 interface InterfaceState {
-  authUser?: any;
+  user: any;
 }
 
 class App extends React.Component<InterfaceProps, InterfaceState> {
@@ -49,38 +54,74 @@ class App extends React.Component<InterfaceProps, InterfaceState> {
     super(props);
 
     this.state = {
-      authUser: null
+      user: null // <-- add this line
     };
   }
-
   public componentDidMount() {
-    firebase.auth.onAuthStateChanged(authUser => {
-      authUser
-        ? this.setState({ authUser })
-        : this.setState({ authUser: null });
+    authRef.onAuthStateChanged((user: any) => {
+      if (user) {
+        this.props.setAuthUser(user);
+        this.setState({ user });
+      }
     });
   }
 
+  public logout() {
+    authRef.signOut().then(() => {
+      this.setState({
+        user: null
+      });
+      this.props.setAuthUser(null);
+      // TODO:: redirect to login
+    });
+  }
   render() {
-    const { authUser } = this.state;
+    const { user } = this.state;
     return (
       <Router>
-        <div className="container mx-auto flex mt-8">
-          {authUser ? <SideBar /> : null}
-          <Switch>
-            <Route exact={true} path={routes.SIGN_UP} component={SignUp} />
-            <Route exact={true} path="/" component={LoginPage} />
-            <Route exact={true} path={routes.LOGIN} component={LoginPage} />
-            <Route exact path="/home" component={HomePage} />
-            <Route exact path="/connect" component={ConnectGroupSearch} />
-            <Route exact path="/teams" component={VolunteerTeams} />
-            <Route exact path="/user" component={Profile} />
-          </Switch>
+        <div>
+          <div className="nav">
+            <NavBar hasUser={user != null} />
+          </div>
+          <div className="container mx-auto flex mt-8">
+            {user != null ? <SideBar onLogout={() => this.logout()} /> : null}
+            {user == null && (
+              <Redirect
+                to={{
+                  pathname: "/login"
+                }}
+              />
+            )}
+            <Switch>
+              <Route exact={true} path={routes.SIGN_UP} component={SignUp} />
+              <Route exact={true} path="/" component={LoginPage} />
+              <Route exact={true} path={routes.LOGIN} component={LoginPage} />
+              <Route exact path="/home" component={HomePage} />
+              <Route exact path="/connect" component={ConnectGroupSearch} />
+              <Route exact path="/teams" component={VolunteerTeams} />
+              <Route exact path="/user" component={Profile} />
+            </Switch>
+          </div>
         </div>
       </Router>
     );
   }
 }
 
-// removed withAuthorization
-export default App;
+const mapStateToProps = (state: any) => {
+  return {
+    auth: state.auth
+  };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    setAuthUser: (authUser: any) =>
+      dispatch({ type: "auth::set", payload: authUser })
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

@@ -1,3 +1,5 @@
+@import "./static/css/main.scss"; /* Using a string */
+
 body {
   margin: 0;
   padding: 0;
@@ -6,10 +8,19 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #e3e8ee;
+  /* background-color: #e3e8ee; */
+  background-color: var(--c-secondary-000);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.primary {
+  fill: #a5b3bb;
+}
+
+.secondary {
+  fill: var(--c-secondary-900);
 }

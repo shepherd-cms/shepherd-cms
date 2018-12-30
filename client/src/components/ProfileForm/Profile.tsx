@@ -1,8 +1,9 @@
 import * as React from "react";
 import Card from "../Card";
+import Button from "../Button";
 import CardHeader from "../CardHeader";
 import Notifications from "../Notifications";
-import { ContactBasic } from "../../models/contacts";
+import { getContactByEmail, ContactBasic } from "../../models/contacts";
 
 interface IProps {
   contact: ContactBasic;
@@ -25,22 +26,20 @@ class Profile extends React.Component<IProps, IState> {
   }
   render() {
     const { contact } = this.props;
+
     return (
-      <div>
+      <div style={{ width: "100%" }}>
         <Card>
           <form
-            className="w-full p-6"
+            className="w-full p-3"
             onSubmit={(event: any) => {
-              console.log("submitting");
               this.props.onSubmit(event);
             }}
           >
             <CardHeader>
               <div>Profile</div>
               <div>
-                <button className="bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">
-                  Save
-                </button>
+                <Button text="Save" />
               </div>
             </CardHeader>
             <div>
@@ -53,16 +52,13 @@ class Profile extends React.Component<IProps, IState> {
                     First Name
                   </label>
                   <input
-                    className="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                    className="appearance-none block w-full bg-grey-lighter text-grey-darker border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                     id="grid-first-name"
                     type="text"
                     value={contact.firstName}
                     onChange={event => this.handleChange(event, "firstName")}
                     placeholder="Jane"
                   />
-                  <p className="text-red text-xs italic">
-                    Please fill out this field.
-                  </p>
                 </div>
                 <div className="w-full md:w-1/2 px-3">
                   <label
@@ -135,17 +131,22 @@ class Profile extends React.Component<IProps, IState> {
         </Card>
 
         <Card>
-          <CardHeader>
-            <div>Notifications</div>
+          <form
+            className="w-full p-3"
+            onSubmit={(event: any) => {
+              this.props.onSubmit(event);
+            }}
+          >
+            <CardHeader>
+              <div>Notifications</div>
+              <div>
+                <Button text="Save" />
+              </div>
+            </CardHeader>
             <div>
-              <button className="bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">
-                Save
-              </button>
+              <Notifications />
             </div>
-          </CardHeader>
-          <div>
-            <Notifications />
-          </div>
+          </form>
         </Card>
       </div>
     );

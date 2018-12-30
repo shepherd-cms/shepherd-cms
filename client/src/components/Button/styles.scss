@@ -1,0 +1,7 @@
+.default {
+  background-color: var(--c-secondary-700);
+
+  &:hover {
+    background-color: var(--c-secondary-400);
+  }
+}

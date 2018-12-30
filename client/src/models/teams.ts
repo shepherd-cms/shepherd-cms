@@ -1,14 +1,7 @@
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 
-var config = {
-  apiKey: "AIzaSyBZld3ROfOhlziPvixCuqLCsqHqmyGPe6o",
-  authDomain: "shepherd-b354b.firebaseapp.com",
-  databaseURL: "https://shepherd-b354b.firebaseio.com",
-  projectId: "shepherd-b354b",
-  storageBucket: "shepherd-b354b.appspot.com",
-  messagingSenderId: "874680551201"
-};
+var config = {};
 
 // interface TeamSchema
 // interface TeamBasic

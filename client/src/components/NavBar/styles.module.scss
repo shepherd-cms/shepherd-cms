@@ -1,0 +1,28 @@
+.nav {
+  background-color: var(--c-white);
+  border-top: 5px solid var(--c-secondary-900);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-base);
+  height: 3em;
+  padding: 0 var(--sz-06);
+
+  & .logo {
+    font-size: larger;
+  }
+
+  & .logo2 {
+    font-size: smaller;
+    color: grey;
+  }
+}
+
+.user {
+  display: flex;
+  align-items: center;
+
+  & svg {
+    height: 2em;
+  }
+}

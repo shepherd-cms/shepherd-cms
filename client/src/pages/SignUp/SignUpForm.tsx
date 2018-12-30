@@ -1,7 +1,15 @@
 import * as React from "react";
 import Button from "../../components/Button";
+import {
+  ContactBasic,
+  createContactOnAuth,
+  getContactById
+} from "../../models/contacts";
 import * as routes from "../../constants/routes";
-import { auth, db } from "../../firebase";
+
+import Alert from "../../components/Alert";
+import { authRef, doCreateUser } from "../../firebase";
+import { connect } from "react-redux";
 
 interface InterfaceProps {
   email?: string;
@@ -9,7 +17,9 @@ interface InterfaceProps {
   history?: any;
   passwordOne?: string;
   passwordTwo?: string;
-  username?: string;
+  firstName?: string;
+  lastName?: string;
+  setProfile: (user: ContactBasic) => void;
 }
 
 interface InterfaceState {
@@ -17,19 +27,18 @@ interface InterfaceState {
   error: any;
   passwordOne: string;
   passwordTwo: string;
-  username: string;
+  firstName: string;
+  lastName: string;
 }
 
-export class SignUpForm extends React.Component<
-  InterfaceProps,
-  InterfaceState
-> {
+class SignUpForm extends React.Component<InterfaceProps, InterfaceState> {
   private static INITIAL_STATE = {
     email: "",
     error: null,
     passwordOne: "",
     passwordTwo: "",
-    username: ""
+    firstName: "",
+    lastName: ""
   };
 
   private static propKey(propertyName: string, value: any): object {
@@ -38,6 +47,7 @@ export class SignUpForm extends React.Component<
 
   constructor(props: InterfaceProps) {
     super(props);
+    console.log("this.props.history", this.props.history);
     this.state = { ...SignUpForm.INITIAL_STATE };
   }
 
@@ -48,17 +58,27 @@ export class SignUpForm extends React.Component<
   public onSubmit(event: any) {
     event.preventDefault();
 
-    const { email, passwordOne, username } = this.state;
+    const { email, passwordOne, firstName, lastName } = this.state;
     const { history } = this.props;
 
-    auth
-      .doCreateUserWithEmailAndPassword(email, passwordOne)
+    authRef
+      .createUserWithEmailAndPassword(email, passwordOne)
       .then((authUser: any) => {
         // Create a user in your own accessible Firebase Database too
-        db.doCreateUser(authUser.user.uid, username, email)
+        doCreateUser(authUser.user.uid, firstName, lastName, email)
           .then(() => {
-            this.setState(() => ({ ...SignUpForm.INITIAL_STATE }));
-            history.push(routes.HOME);
+            createContactOnAuth(
+              authUser.user.uid,
+              email,
+              firstName,
+              lastName
+            ).then(data => {
+              getContactById(authUser.user.uid).then(data => {
+                this.props.setProfile(data);
+                this.setState(() => ({ ...SignUpForm.INITIAL_STATE }));
+                history.push(routes.HOME);
+              });
+            });
           })
           .catch(error => {
             this.setState(SignUpForm.propKey("error", error));
@@ -70,13 +90,21 @@ export class SignUpForm extends React.Component<
   }
 
   public render() {
-    const { username, email, passwordOne, passwordTwo, error } = this.state;
+    const {
+      firstName,
+      lastName,
+      email,
+      passwordOne,
+      passwordTwo,
+      error
+    } = this.state;
 
     const isInvalid =
       passwordOne !== passwordTwo ||
       passwordOne === "" ||
       email === "" ||
-      username === "";
+      lastName === "" ||
+      firstName === "";
 
     return (
       <div className="w-full max-w-xs m-auto pt-4">
@@ -85,19 +113,38 @@ export class SignUpForm extends React.Component<
           onSubmit={event => this.onSubmit(event)}
         >
           <div className="mb-4">
+            {error && <Alert message={error.message} />}
+          </div>
+          <div className="mb-4">
             <label
               className="block text-grey-darker text-sm font-bold mb-2"
-              htmlFor="username"
+              htmlFor="firstName"
             >
-              Username
+              First Name
             </label>
             <input
-              id="username"
-              value={username}
+              id="firstName"
+              value={firstName}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
-              onChange={event => this.setStateWithEvent(event, "username")}
+              onChange={event => this.setStateWithEvent(event, "firstName")}
               type="text"
-              placeholder="Full Name"
+              placeholder="First Name"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-grey-darker text-sm font-bold mb-2"
+              htmlFor="lastName"
+            >
+              Last Name
+            </label>
+            <input
+              id="lastName"
+              value={lastName}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
+              onChange={event => this.setStateWithEvent(event, "lastName")}
+              type="text"
+              placeholder="Last Name"
             />
           </div>
           <div>
@@ -150,10 +197,24 @@ export class SignUpForm extends React.Component<
           <div className="flex items-center justify-between">
             <Button disabled={isInvalid} type="submit" text="Sign Up" />
           </div>
-
-          {error && <p>{error.message}</p>}
         </form>
       </div>
     );
   }
 }
+
+const mapStateToProps = (state: any) => {
+  return {};
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    setProfile: (user: ContactBasic) =>
+      dispatch({ type: "user::set", payload: user })
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SignUpForm);

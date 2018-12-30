@@ -1,10 +1,14 @@
 import * as React from "react";
-import Styles from "./styles.module.scss";
+
+import classNames from "classnames";
+import "./styles.scss";
 
 interface IProps {
   type: string;
   disabled: boolean;
   text: string;
+  className: string;
+  kind: string;
 }
 
 interface IState {}
@@ -15,9 +19,19 @@ class Card extends React.Component<IProps, IState> {
   public state: IState = {};
 
   public render() {
+    const { className, kind } = this.props;
+
+    let buttonType = "default";
+    if (kind && kind == "primary") {
+      buttonType = "primary";
+    }
+
     return (
       <button
-        className="bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        className={classNames(
+          "w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
+          buttonType
+        )}
         disabled={this.props.disabled}
         type={this.props.type}
       >

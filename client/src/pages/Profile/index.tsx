@@ -2,8 +2,11 @@ import * as React from "react";
 import ProfileForm from "../../components/ProfileForm";
 import styles from "./styles.module.scss";
 import "../../static/css/tailwind.min.css";
+import { connect } from "react-redux";
 
-interface IProps {}
+interface IProps {
+  user: any;
+}
 
 interface IState {}
 

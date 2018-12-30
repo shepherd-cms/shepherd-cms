@@ -20,7 +20,7 @@ class Card extends React.Component<IProps, IState> {
     return (
       <div
         className={classNames(
-          "shadow-lg mb-4 rounded-sm",
+          "shadow-lg mb-4 rounded-lg",
           Styles.root,
           this.props.className
         )}

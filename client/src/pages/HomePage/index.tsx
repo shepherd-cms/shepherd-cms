@@ -29,7 +29,6 @@ class HomePage extends React.Component<IProps, IState> {
 
   public render() {
     const { contact } = this.state;
-    console.log("contact", contact);
     if (!contact) return null;
     return (
       <div className="w-full">
