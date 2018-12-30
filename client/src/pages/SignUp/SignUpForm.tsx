@@ -5,6 +5,8 @@ import {
   createContactOnAuth,
   getContactById
 } from "../../models/contacts";
+import { LoginLink } from "../../pages/LoginPage";
+
 import * as routes from "../../constants/routes";
 
 import Alert from "../../components/Alert";
@@ -198,6 +200,7 @@ class SignUpForm extends React.Component<InterfaceProps, InterfaceState> {
             <Button disabled={isInvalid} type="submit" text="Sign Up" />
           </div>
         </form>
+        <LoginLink />
       </div>
     );
   }
